@@ -18,6 +18,9 @@ https://user-images.githubusercontent.com/53246557/221760113-4a523e7e-d743-4dff-
 <img src="pictures/Visualization_1.png" width="800px">
 </div>
 
+<details>
+<summary><b>More examples</b></summary>
+  
 ### Example 2
 <div align=center>
 <img src="pictures/Visualization_2.png" width="800px">
@@ -48,6 +51,7 @@ https://user-images.githubusercontent.com/53246557/221760113-4a523e7e-d743-4dff-
 <img src="pictures/Visualization_0.png" width="800px">
 </div>
 
+</details>
 
 ## Quick Start
 ### Text-video Retrieval
