@@ -60,5 +60,14 @@ https://user-images.githubusercontent.com/53246557/221760113-4a523e7e-d743-4dff-
 
 ## Citation
 If you find our code helpful in your work, please consider citing:
+```
+@inproceedings{jin2022video,
+  title={Video-Text as Game Players: Hierarchical Banzhaf Interaction for Cross-Modal Representation Learning},
+  author={Peng, Jin and JinFa, Huang and Pengfei, Xiong and Shangxuan, Tian and Chang, Liu and Xiangyang, Ji and Li, Yuan and Jie, Chen},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  year={2023}
+}
+```
 
 ## Acknowledgments
+Our code is based on [EMCL](https://github.com/jpthu17/EMCL), [CLIP](https://github.com/openai/CLIP), [CLIP4Clip](https://github.com/ArrowLuo/CLIP4Clip/) and [DRL](https://github.com/foolwood/DRL). We sincerely appreciate for their contributions.
