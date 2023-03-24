@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos.">
+  <meta name="keywords" content="Nerfies, D-NeRF, NeRF">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Video-Text as Game Players: Hierarchical Banzhaf Interaction for Cross-Modal Representation Learning</title>
+
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Video-Text as Game Players:<br /> Hierarchical Banzhaf Interaction for Cross-Modal Representation Learning</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Peng Jin<sup>1,3</sup>, </span>
+            <span class="author-block">Jinfa Huang<sup>1,3</sup>, </span>
+            <span class="author-block">Pengfei Xiong<sup>4</sup>, </span>
+            <span class="author-block">Shangxuan Tian<sup>4</sup>, </span> <br />
+            <span class="author-block">Chang Liu<sup>5</sup>, </span>
+            <span class="author-block">Xiangyang Ji<sup>5</sup>, </span>
+            <span class="author-block">Li Yuan<sup>1,2,3 *</sup>, </span>
+            <span class="author-block">Jie Chen<sup>1,2,3 *</sup>, </span>
+          </div>
+
+          <div class="is-size-8 publication-authors">
+            <span class="author-block"><sup>1</sup>School of Electronic and Computer Engineering, Peking University </span>
+            <span class="author-block"><sup>2</sup>Peng Cheng Laboratory </span> <br />
+            <span class="author-block"><sup>3</sup>AI for Science (AI4S)-Preferred Program, Peking University </span> <br />
+            <span class="author-block"><sup>4</sup>Shopee </span>
+            <span class="author-block"><sup>5</sup>Department of Automation and BNRist, Tsinghua University </span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="https://"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Demo</span>
+                  </a>
+              </span>
+              <span class="link-block">
+                <a href="https://"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://github.com/jpthu17/HBI"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- <section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4"
+                type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        <span class="dnerf">Nerfies</span> turns selfie videos from your phone into
+        free-viewpoint
+        portraits.
+      </h2>
+    </div>
+  </div>
+</section> -->
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Contrastive learning-based video-language representation learning approaches,
+            e.g., CLIP, have achieved outstanding performance, which pursue semantic interaction
+            upon pre-defined video-text pairs. To clarify this coarse-grained global interaction
+            and move a step further, we have to encounter challenging shell-breaking interactions
+            for fine-grained cross-modal learning.
+            In this paper, we creatively model video-text as
+            game players with multivariate cooperative game theory to wisely handle the uncertainty
+            during fine-grained semantic interaction with diverse granularity, flexible combination,
+            and vague intensity. Concretely, we propose Hierarchical Banzhaf
+            Interaction (HBI) to value possible correspondence between video frames and
+            text words for sensitive and explainable cross-modal contrast. To efficiently realize the
+            cooperative game of multiple video frames and multiple text words, the proposed method
+            clusters the original video frames (text words) and computes the Banzhaf Interaction
+            between the merged tokens. By stacking token merge modules, we achieve cooperative games
+            at different semantic levels.
+            Extensive experiments on commonly used text-video retrieval and video-question answering
+            benchmarks with superior performances justify the efficacy of our HBI. More encouragingly,
+            it can also serve as a visualization tool to promote the understanding of cross-modal
+            interaction, which have a far-reaching impact on the community.
+          </p>
+        </div>
+        <img src="./static/images/fig1.png"
+                class="abstract-image"
+                alt="Interpolate start reference image."/>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+
+        <h2 class="title is-3">Visualization</h2>
+
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-15 has-text-centered">
+            <img src="./static/images/Visualization_1.png"
+                class="abstract-image"
+                alt="Interpolate start reference image."/>
+            <p>Example 1</p>
+          </div>
+        </div>
+        <br/>
+
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-15 has-text-centered">
+            <img src="./static/images/Visualization_2.png"
+                class="abstract-image"
+                alt="Interpolate start reference image."/>
+            <p>Example 2</p>
+          </div>
+        </div>
+        <br/>
+
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-15 has-text-centered">
+            <img src="./static/images/Visualization_3.png"
+                class="abstract-image"
+                alt="Interpolate start reference image."/>
+            <p>Example 3</p>
+          </div>
+        </div>
+        <br/>
+
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-15 has-text-centered">
+            <img src="./static/images/Visualization_4.png"
+                class="abstract-image"
+                alt="Interpolate start reference image."/>
+            <p>Example 4</p>
+          </div>
+        </div>
+        <br/>
+
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-15 has-text-centered">
+            <img src="./static/images/Visualization_5.png"
+                class="abstract-image"
+                alt="Interpolate start reference image."/>
+            <p>Example 5</p>
+          </div>
+        </div>
+        <br/>
+
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-15 has-text-centered">
+            <img src="./static/images/Visualization_6.png"
+                class="abstract-image"
+                alt="Interpolate start reference image."/>
+            <p>Example 6</p>
+          </div>
+        </div>
+        <br/>
+
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-15 has-text-centered">
+            <img src="./static/images/Visualization_0.png"
+                class="abstract-image"
+                alt="Interpolate start reference image."/>
+            <p>Example 7</p>
+          </div>
+        </div>
+        <br/>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            The source code is based on the <a href="https://nerfies.github.io/">Nerfies</a> project page. We thank the authors for creating and opening it.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
