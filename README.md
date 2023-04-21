@@ -74,7 +74,7 @@ If you find this paper useful, please consider staring 🌟 this repo and citing
 ```
 @inproceedings{jin2022video,
   title={Video-Text as Game Players: Hierarchical Banzhaf Interaction for Cross-Modal Representation Learning},
-  author={Peng, Jin and JinFa, Huang and Pengfei, Xiong and Shangxuan, Tian and Chang, Liu and Xiangyang, Ji and Li, Yuan and Jie, Chen},
+  author={Jin, Peng and Huang, Jinfa and Xiong, Pengfei and Tian, Shangxuan and Liu, Chang and Ji, Xiangyang and Yuan, Li and Chen, Jie},
   booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
   year={2023}
 }
