@@ -30,8 +30,9 @@ https://user-images.githubusercontent.com/53246557/221760113-4a523e7e-d743-4dff-
 </div>
 
 ## 📣 Updates
+* Jun 28 2023: Release code for reimplementing the experiments in the paper.
 * Mar 28 2023: Our **HBI** has been selected as a Highlight paper at CVPR 2023! (Top 2.5% of 9155 submissions).
-* Feb 28 2023: We will release the code asap. No later than the end of May. (I am busy with other DDLs. After that, I will open the source code as soon as possible. Please understand.)
+* Feb 28 2023: We will release the code asap. (I am busy with other DDLs. After that, I will open the source code as soon as possible. Please understand.)
 
 
 ## 😍 Visualization
