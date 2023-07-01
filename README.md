@@ -101,10 +101,10 @@ wget https://openaipublic.azureedge.net/clip/models/40d365715913c9da98579312b702
 
 |Datasets|Google Cloud|Baidu Yun|Peking University Yun|
 |:--------:|:--------------:|:-----------:|:-----------:|
-| MSR-VTT | [Download](https://drive.google.com/drive/folders/1LYVUCPRxpKMRjCSfB_Gz-ugQa88FqDu_?usp=sharing) | TODO | [Download](https://disk.pku.edu.cn:443/link/BE39AF93BE1882FF987BAC900202B266) |
-| MSVD | [Download](https://drive.google.com/drive/folders/18EXLWvCCQMRBd7-n6uznBUHdP4uC6Q15?usp=sharing) | TODO | [Download](https://disk.pku.edu.cn:443/link/CC02BD15907BFFF63E5AAE4BF353A202) |
-| ActivityNet | TODO | TODO | [Download](https://disk.pku.edu.cn:443/link/83351ABDAEA4A17A5A139B799BB524AC) |
-| DiDeMo | TODO | TODO | [Download](https://disk.pku.edu.cn:443/link/BBF9F5990FC4D7FD5EA9777C32901E62) |
+| MSR-VTT | [Download](https://drive.google.com/drive/folders/1LYVUCPRxpKMRjCSfB_Gz-ugQa88FqDu_?usp=sharing) | [Download](https://pan.baidu.com/s/1Gdf6ivybZkpua5z1HsCWRA?pwd=enav) | [Download](https://disk.pku.edu.cn:443/link/BE39AF93BE1882FF987BAC900202B266) |
+| MSVD | [Download](https://drive.google.com/drive/folders/18EXLWvCCQMRBd7-n6uznBUHdP4uC6Q15?usp=sharing) | [Download](https://pan.baidu.com/s/1hApFdxgV3TV2TCcnM_yBiA?pwd=kbfi) | [Download](https://disk.pku.edu.cn:443/link/CC02BD15907BFFF63E5AAE4BF353A202) |
+| ActivityNet | TODO | [Download](https://pan.baidu.com/s/1tI441VGvN3In7pcvss0grg?pwd=2ddy) | [Download](https://disk.pku.edu.cn:443/link/83351ABDAEA4A17A5A139B799BB524AC) |
+| DiDeMo | TODO | [Download](https://pan.baidu.com/s/1Tsy9nb1hWzeXaZ4xr7qoTg?pwd=c842) | [Download](https://disk.pku.edu.cn:443/link/BBF9F5990FC4D7FD5EA9777C32901E62) |
 
 </div>
 
@@ -121,7 +121,7 @@ Code is under preparation...
 
 |Checkpoint|Google Cloud|Baidu Yun|Peking University Yun|
 |:--------:|:--------------:|:-----------:|:-----------:|
-| MSR-VTT | [Download](https://drive.google.com/file/d/1hoV9vsT0-KIjjIRPIB9D4dMXwrckvSLk/view?usp=sharing) | TODO | [Download](https://disk.pku.edu.cn:443/link/424DFFAC5D2CB600E73BCB67C05A73FD) |
+| MSR-VTT | [Download](https://drive.google.com/file/d/1hoV9vsT0-KIjjIRPIB9D4dMXwrckvSLk/view?usp=sharing) | [Download](https://pan.baidu.com/s/1WWlpoSAUII3KH6KNsq7VSQ?pwd=pkph) | [Download](https://disk.pku.edu.cn:443/link/424DFFAC5D2CB600E73BCB67C05A73FD) |
 
 </div>
 
@@ -178,7 +178,7 @@ main_retrieval.py \
 
 |Checkpoint|Google Cloud|Baidu Yun|Peking University Yun|
 |:--------:|:--------------:|:-----------:|:-----------:|
-| MSR-VTT-QA | [Download](https://drive.google.com/file/d/15GZXMaPvowL4GgxtB9ETvb8vivdcE8Wd/view?usp=sharing) | TODO | [Download](https://disk.pku.edu.cn:443/link/DE99ECAD7C1E7F550A2753B561086CDF) |
+| MSR-VTT-QA | [Download](https://drive.google.com/file/d/15GZXMaPvowL4GgxtB9ETvb8vivdcE8Wd/view?usp=sharing) | [Download](https://pan.baidu.com/s/1a959PS2EaYHxcYyrrQ4odQ?pwd=r34t) | [Download](https://disk.pku.edu.cn:443/link/DE99ECAD7C1E7F550A2753B561086CDF) |
 
 </div>
 
