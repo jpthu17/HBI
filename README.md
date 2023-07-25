@@ -119,6 +119,7 @@ Training code is under preparation...
 |Checkpoint|Google Cloud|Baidu Yun|Peking University Yun|
 |:--------:|:--------------:|:-----------:|:-----------:|
 | MSR-VTT | [Download](https://drive.google.com/file/d/1hoV9vsT0-KIjjIRPIB9D4dMXwrckvSLk/view?usp=sharing) | [Download](https://pan.baidu.com/s/1WWlpoSAUII3KH6KNsq7VSQ?pwd=pkph) | [Download](https://disk.pku.edu.cn:443/link/424DFFAC5D2CB600E73BCB67C05A73FD) |
+| ActivityNet | [Download](https://drive.google.com/file/d/1TRUAl17Wj2g2cyxWC5HUPflUo7eg78uu/view?usp=drive_link) | [Download](https://pan.baidu.com/s/1ynAaE0NWXx0LHhUZCC0uww?pwd=ta8v) | [Download](https://disk.pku.edu.cn:443/link/A7BDBF989B3E2C6356283ED01FBAACF2) |
 
 </div>
 
@@ -163,6 +164,54 @@ main_retrieval.py \
 --datatype msrvtt \
 --max_words 24 \
 --max_frames 12 \
+--video_framerate 1 \
+--estimator ${ESTIMATOR_PATH} \
+--output_dir ${OUTPUT_PATH} \
+--kl 2 \
+--skl 1
+```
+
+#### Eval on ActivityNet Captions
+```shell
+CUDA_VISIBLE_DEVICES=0,1 \
+python -m torch.distributed.launch \
+--master_port 2502 \
+--nproc_per_node=2 \
+main_retrieval.py \
+--do_eval 1 \
+--workers 8 \
+--n_display 50 \
+--batch_size_val 128 \
+--anno_path ${DATA_PATH}/ActivityNet \
+--video_path ${DATA_PATH}/ActivityNet/Activity_Videos \
+--datatype activity \
+--max_words 64 \
+--max_frames 64 \
+--video_framerate 1 \
+--init_model ${CHECKPOINT_PATH} \
+--output_dir ${OUTPUT_PATH} 
+```
+
+#### Train on ActivityNet Captions
+```shell
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 \
+python -m torch.distributed.launch \
+--master_port 2502 \
+--nproc_per_node=8 \
+main_retrieval.py \
+--do_train 1 \
+--workers 8 \
+--n_display 10 \
+--epochs 10 \
+--lr 1e-4 \
+--coef_lr 1e-3 \
+--batch_size 128 \
+--batch_size_val 128 \
+--anno_path ${DATA_PATH}/ActivityNet \
+--video_path ${DATA_PATH}/ActivityNet/Activity_Videos \
+--datatype activity \
+--max_words 64 \
+--max_frames 64 \
 --video_framerate 1 \
 --estimator ${ESTIMATOR_PATH} \
 --output_dir ${OUTPUT_PATH} \
