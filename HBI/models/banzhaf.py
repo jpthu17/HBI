@@ -80,13 +80,13 @@ class BanzhafInteraction:
     @torch.no_grad()
     def banzhaf_interaction(self, retrieve_logits, text_mask, video_mask, text_weight, video_weight,
                         i, j):
-        s_t = (torch.rand((self.t_len)) > 0.5).long().to(retrieve_logits.device)
-        s_j = (torch.rand((self.v_len)) > 0.5).long().to(retrieve_logits.device)
-        s_t[i], s_j[j] = 0, 0
+        s_t = (torch.rand(text_mask.size()) > 0.5).long().to(retrieve_logits.device)
+        s_j = (torch.rand(video_mask.size()) > 0.5).long().to(retrieve_logits.device)
+        s_t[:, i], s_j[:, j] = 0, 0
 
         _text_mask, _video_mask = text_mask.clone(), video_mask.clone()
-        _text_mask[:, s_t] = 0
-        _video_mask[:, s_j] = 0
+        _text_mask.masked_fill_((1 - s_t).to(torch.bool), 0)
+        _video_mask.masked_fill_((1 - s_j).to(torch.bool), 0)
 
         #########################
         _text_weight0, _video_weight0 = text_weight.clone(), video_weight.clone()
@@ -97,7 +97,7 @@ class BanzhafInteraction:
 
         _text_weight0.masked_fill_((1 - _text_mask).to(torch.bool), float(-9e15))
         _text_weight0 = torch.softmax(_text_weight0, dim=-1)  # B x N_t
-        _video_weight0.masked_fill_((1 - video_mask).to(torch.bool), float(-9e15))
+        _video_weight0.masked_fill_((1 - _video_mask).to(torch.bool), float(-9e15))
         _video_weight0 = torch.softmax(_video_weight0, dim=-1)  # B x N_v
 
         t2v_logits, max_idx1 = _retrieve_logits0.max(dim=-1)  # btv -> bt
@@ -113,7 +113,7 @@ class BanzhafInteraction:
         _text_weight0.masked_fill_((1 - _text_mask).to(torch.bool), float(-9e15))
         _text_weight0[:, i] = text_weight[:, i]
         _text_weight0 = torch.softmax(_text_weight0, dim=-1)  # B x N_t
-        _video_weight0.masked_fill_((1 - video_mask).to(torch.bool), float(-9e15))
+        _video_weight0.masked_fill_((1 - _video_mask).to(torch.bool), float(-9e15))
         _video_weight0[:, j] = video_weight[:, j]
         _video_weight0 = torch.softmax(_video_weight0, dim=-1)  # B x N_v
 
@@ -135,7 +135,7 @@ class BanzhafInteraction:
 
         _text_weight0.masked_fill_((1 - _text_mask).to(torch.bool), float(-9e15))
         _text_weight0 = torch.softmax(_text_weight0, dim=-1)  # B x N_t
-        _video_weight0.masked_fill_((1 - video_mask).to(torch.bool), float(-9e15))
+        _video_weight0.masked_fill_((1 - _video_mask).to(torch.bool), float(-9e15))
         _video_weight0 = torch.softmax(_video_weight0, dim=-1)  # B x N_v
 
         t2v_logits, max_idx1 = _retrieve_logits0.max(dim=-1)  # abtv -> abt
@@ -156,7 +156,7 @@ class BanzhafInteraction:
 
         _text_weight0.masked_fill_((1 - _text_mask).to(torch.bool), float(-9e15))
         _text_weight0 = torch.softmax(_text_weight0, dim=-1)  # B x N_t
-        _video_weight0.masked_fill_((1 - video_mask).to(torch.bool), float(-9e15))
+        _video_weight0.masked_fill_((1 - _video_mask).to(torch.bool), float(-9e15))
         _video_weight0 = torch.softmax(_video_weight0, dim=-1)  # B x N_v
 
         t2v_logits, max_idx1 = _retrieve_logits0.max(dim=-1)  # abtv -> abt
