@@ -70,7 +70,7 @@ class BanzhafInteraction:
         for i in range(self.t_len):
             for j in range(self.v_len):
                 for _ in range(self.num):
-                    banzhaf[:, i, j] = self.banzhaf_interaction(retrieve_logits, text_mask, video_mask, text_weight,
+                    banzhaf[:, i, j] += self.banzhaf_interaction(retrieve_logits, text_mask, video_mask, text_weight,
                                                                     video_weight, i, j)
         banzhaf = banzhaf / self.num
         banzhaf = torch.einsum('btv,bt->btv', [banzhaf, text_mask])
