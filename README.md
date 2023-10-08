@@ -23,16 +23,33 @@ If you find this paper useful, please consider staring 🌟 this repo and citing
 }
 ```
 
+<details open><summary>💡 I also have other text-video retrieval projects that may interest you ✨. </summary><p>
+
+> [**DiffusionRet: Generative Text-Video Retrieval with Diffusion Model**](https://arxiv.org/abs/2303.09867)<br>
+> Accepted by ICCV 2023 | [[DiffusionRet Code]](https://github.com/jpthu17/DiffusionRet)<br>
+> Peng Jin, Hao Li, Zesen Cheng, Kehan Li, Xiangyang Ji, Chang Liu, Li Yuan, Jie Chen
+
+> [**Expectation-Maximization Contrastive Learning for Compact Video-and-Language Representations**](https://arxiv.org/abs/2211.11427)<br>
+> Accepted by NeurIPS 2022 | [[EMCL Code]](https://github.com/jpthu17/EMCL)<br>
+> Peng Jin, Jinfa Huang, Fenglin Liu, Xian Wu, Shen Ge, Guoli Song, David Clifton, Jie Chen
+
+> [**Text-Video Retrieval with Disentangled Conceptualization and Set-to-Set Alignment**](https://arxiv.org/abs/2305.12218)<br>
+> Accepted by IJCAI 2023 | [[DiCoSA Code]](https://github.com/jpthu17/DiCoSA)<br>
+> Peng Jin, Hao Li, Zesen Cheng, Jinfa Huang, Zhennan Wang, Li Yuan, Chang Liu, Jie Chen
+</p></details>
+
+## 📣 Updates
+* Oct 08 2023: I am working on the code for Banzhaf Interaction estimator, which is expected to be released soon.
+* Jun 28 2023: Release code for reimplementing the experiments in the paper.
+* Mar 28 2023: Our **HBI** has been selected as a Highlight paper at CVPR 2023! (Top 2.5% of 9155 submissions).
+* Feb 28 2023: We will release the code asap. (I am busy with other DDLs. After that, I will open the source code as soon as possible. Please understand.)
+
+  
 ## ⚡ Demo
 <div align="center">
   
 https://user-images.githubusercontent.com/53246557/221760113-4a523e7e-d743-4dff-9f16-357ab0be0d5b.mp4
 </div>
-
-## 📣 Updates
-* Jun 28 2023: Release code for reimplementing the experiments in the paper.
-* Mar 28 2023: Our **HBI** has been selected as a Highlight paper at CVPR 2023! (Top 2.5% of 9155 submissions).
-* Feb 28 2023: We will release the code asap. (I am busy with other DDLs. After that, I will open the source code as soon as possible. Please understand.)
 
 
 ## 😍 Visualization
