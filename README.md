@@ -39,7 +39,7 @@ If you find this paper useful, please consider staring 🌟 this repo and citing
 </p></details>
 
 ## 📣 Updates
-* Oct 11 2023: Release code for Banzhaf Interaction estimator.
+* Oct 11 2023: We release code for Banzhaf Interaction estimator. Recommended running parameters will be provided shortly, and we will also release our pre-trained estimator weights.
 * Oct 08 2023: I am working on the code for Banzhaf Interaction estimator, which is expected to be released soon.
 * Jun 28 2023: Release code for reimplementing the experiments in the paper.
 * Mar 28 2023: Our **HBI** has been selected as a Highlight paper at CVPR 2023! (Top 2.5% of 9155 submissions).
