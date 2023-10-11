@@ -9,8 +9,9 @@ from .module_clip import CLIP, convert_weights, _PT_NAME
 from .module_cross import CrossModel, Transformer as TransformerClip
 from .until_module import LayerNorm, AllGather, AllGather2, CrossEn, MSE, ArcCrossEn, KL
 import numpy as np
-from .banzhaf import BanzhafModule
+from .banzhaf import BanzhafModule, BanzhafInteraction
 from .cluster import CTM, TCBlock
+
 allgather = AllGather.apply
 allgather2 = AllGather2.apply
 
@@ -85,11 +86,11 @@ class HBI(nn.Module):
         self.cross_config = cross_config
         if self.interaction == 'wti':
             self.text_weight_fc = nn.Sequential(
-                    nn.Linear(transformer_width, 2*transformer_width), nn.ReLU(inplace=True),
-                    nn.Linear(2*transformer_width, 1))
+                nn.Linear(transformer_width, 2 * transformer_width), nn.ReLU(inplace=True),
+                nn.Linear(2 * transformer_width, 1))
             self.video_weight_fc = nn.Sequential(
-                    nn.Linear(transformer_width, 2*transformer_width), nn.ReLU(inplace=True),
-                    nn.Linear(2*transformer_width, 1))
+                nn.Linear(transformer_width, 2 * transformer_width), nn.ReLU(inplace=True),
+                nn.Linear(2 * transformer_width, 1))
 
             self.text_weight_fc0 = nn.Sequential(
                 nn.Linear(transformer_width, 2 * transformer_width), nn.ReLU(inplace=True),
@@ -118,34 +119,18 @@ class HBI(nn.Module):
 
         self.loss_fct = CrossEn(config)
         self.loss_arcfct = ArcCrossEn(margin=10)
-        self.banzhafmodel = BanzhafModule(64)
-        self.banzhafmodel0 = BanzhafModule(64)
-        self.banzhafmodel1 = BanzhafModule(64)
         self.banzhafteacher = BanzhafModule(64)
-        
+        self.banzhafinteraction = BanzhafInteraction(config.max_words, config.max_frames, 100)
+
         self.apply(self.init_weights)  # random init must before loading pretrain
         self.clip.load_state_dict(state_dict, strict=False)
 
-        if os.path.exists(config.estimator):
-            model_state_dict = torch.load(config.estimator, map_location='cpu')
-            self.banzhafteacher.load_state_dict(model_state_dict, strict=False)
-
-        self.t_ctm0 = CTM(sample_ratio=config.t_rate0, embed_dim=512, dim_out=512, k=3)
-        self.t_block0 = TCBlock(dim=512, num_heads=8)
-        self.t_ctm1 = CTM(sample_ratio=config.t_rate1, embed_dim=512, dim_out=512, k=3)
-        self.t_block1 = TCBlock(dim=512, num_heads=8)
-
-        self.v_ctm0 = CTM(sample_ratio=config.v_rate0, embed_dim=512, dim_out=512, k=3)
-        self.v_block0 = TCBlock(dim=512, num_heads=8)
-        self.v_ctm1 = CTM(sample_ratio=config.v_rate1, embed_dim=512, dim_out=512, k=3)
-        self.v_block1 = TCBlock(dim=512, num_heads=8)
-        
         self.mse = MSE()
         self.kl = KL()
 
         ## ===> Initialization trick [HARD CODE]
         new_state_dict = OrderedDict()
-                
+
         if self.agg_module in ["seqLSTM", "seqTransf"]:
             contain_frame_position = False
             for key in state_dict.keys():
@@ -166,6 +151,19 @@ class HBI(nn.Module):
 
         self.load_state_dict(new_state_dict, strict=False)  # only update new state (seqTransf/seqLSTM/tightTransf)
         ## <=== End of initialization trick
+
+        for param in self.clip.parameters():
+            param.requires_grad = False  # not update by gradient
+        for param in self.transformerClip.parameters():
+            param.requires_grad = False  # not update by gradient
+        for param in self.frame_position_embeddings.parameters():
+            param.requires_grad = False  # not update by gradient
+
+        for param in self.text_weight_fc.parameters():
+            param.requires_grad = False  # not update by gradient
+        for param in self.video_weight_fc.parameters():
+            param.requires_grad = False  # not update by gradient
+
 
     def forward(self, text_ids, text_mask, video, video_mask=None, idx=None, global_step=0):
         text_ids = text_ids.view(-1, text_ids.shape[-1])
@@ -199,83 +197,19 @@ class HBI(nn.Module):
             logit_scale = self.clip.logit_scale.exp()
             loss = 0.
 
-            t_idx_token = torch.arange(text_feat.size(1))[None, :].repeat(text_feat.size(0), 1)
-            t_agg_weight = text_feat.new_ones(text_feat.size(0), text_feat.size(1), 1)
-            t_token_dict = {'x': text_feat,
-                            'token_num': text_feat.size(1),
-                            'idx_token': t_idx_token,
-                            'agg_weight': t_agg_weight,
-                            'mask': text_mask.detach()}
-            v_idx_token = torch.arange(video_feat.size(1))[None, :].repeat(video_feat.size(0), 1)
-            v_agg_weight = video_feat.new_ones(video_feat.size(0), video_feat.size(1), 1)
-            v_token_dict = {'x': video_feat,
-                            'token_num': video_feat.size(1),
-                            'idx_token': v_idx_token,
-                            'agg_weight': v_agg_weight,
-                            'mask': video_mask.detach()}
-
             # entity level
-            M_t2v_logits, M_v2t_logits, logits = self.entity_level(text_feat, cls, video_feat,
-                                                                    text_mask, video_mask)
-            
-            M_loss_t2v = self.loss_fct(M_t2v_logits * logit_scale)
-            M_loss_v2t = self.loss_fct(M_v2t_logits * logit_scale)
-            M_loss = (M_loss_t2v + M_loss_v2t) / 2
+            logits, text_weight, video_weight = self.entity_level(text_feat, cls, video_feat,
+                                                                   text_mask, video_mask)
             logits = torch.diagonal(logits, dim1=0, dim2=1).permute(2, 0, 1)
-            banzhaf = self.banzhafmodel(logits.unsqueeze(1)).squeeze(1)
-            with torch.no_grad():
-                teacher = self.banzhafteacher(logits.unsqueeze(1).clone().detach()).squeeze(1).detach()
-                teacher = torch.einsum('btv,bt->btv', [teacher, text_mask])
-                teacher = torch.einsum('btv,bv->btv', [teacher, video_mask])
-            banzhaf = torch.einsum('btv,bt->btv', [banzhaf, text_mask])
-            banzhaf = torch.einsum('btv,bv->btv', [banzhaf, video_mask])
-            s_loss = self.kl(banzhaf, teacher) + self.kl(banzhaf.T, teacher.T)
-            loss += M_loss + self.config.skl * s_loss
-        
-            # action level
-            t_token_dict = self.t_block0(self.t_ctm0(t_token_dict))
-            v_token_dict = self.v_block0(self.v_ctm0(v_token_dict))
-            text_feat = t_token_dict["x"]
-            video_feat = v_token_dict["x"]
+            y = self.banzhafinteraction(logits.clone().detach(), text_mask, video_mask, text_weight, video_weight).detach()
+            p = self.banzhafteacher(logits.unsqueeze(1)).squeeze(1)
 
-            M_t2v_logits0, M_v2t_logits0, logits = self.action_level(text_feat, cls, video_feat, text_mask, video_mask,
-                                                               t_token_dict, v_token_dict)
+            p = torch.einsum('btv,bt->btv', [p, text_mask])
+            p = torch.einsum('btv,bv->btv', [p, video_mask])
 
-            M_loss_t2v = self.loss_fct(M_t2v_logits0 * logit_scale)
-            M_loss_v2t = self.loss_fct(M_v2t_logits0 * logit_scale)
-            M_loss = (M_loss_t2v + M_loss_v2t) / 2
-            logits = torch.diagonal(logits, dim1=0, dim2=1).permute(2, 0, 1)
-            banzhaf = self.banzhafmodel0(logits.unsqueeze(1)).squeeze(1)
-            with torch.no_grad():
-                teacher = self.banzhafteacher(logits.unsqueeze(1).clone().detach()).squeeze(1).detach()
-            s_loss = self.kl(banzhaf, teacher) + self.kl(banzhaf.T, teacher.T)
-        
-            loss += M_loss + self.config.skl * s_loss
-            loss1 = M_loss + self.config.skl * s_loss
+            loss += self.mse(y, p)
 
-            # event level
-            t_token_dict = self.t_block1(self.t_ctm1(t_token_dict))
-            v_token_dict = self.v_block1(self.v_ctm1(v_token_dict))
-            text_feat = t_token_dict["x"]
-            video_feat = v_token_dict["x"]
-
-            M_t2v_logits1, M_v2t_logits1, logits = self.event_level(text_feat, cls, video_feat, text_mask, video_mask,
-                                                               t_token_dict, v_token_dict)
-            M_loss_t2v = self.loss_fct(M_t2v_logits1 * logit_scale)
-            M_loss_v2t = self.loss_fct(M_v2t_logits1 * logit_scale)
-            M_loss = (M_loss_t2v + M_loss_v2t) / 2
-            logits = torch.diagonal(logits, dim1=0, dim2=1).permute(2, 0, 1)
-            banzhaf = self.banzhafmodel1(logits.unsqueeze(1)).squeeze(1)
-            with torch.no_grad():
-                teacher = self.banzhafteacher(logits.unsqueeze(1).clone().detach()).squeeze(1).detach()
-            s_loss = self.kl(banzhaf, teacher) + self.kl(banzhaf.T, teacher.T)
-
-            loss += M_loss + self.config.skl * s_loss
-            loss2 = M_loss + self.config.skl * s_loss
-            
-            loss += self.config.kl * (self.kl(M_v2t_logits0, M_v2t_logits) + self.kl(M_v2t_logits1, M_v2t_logits) \
-                    + self.kl(M_t2v_logits0, M_t2v_logits) + self.kl(M_t2v_logits1, M_t2v_logits))
-            return loss, loss1, loss2
+            return loss
         else:
             return None
 
@@ -291,7 +225,7 @@ class HBI(nn.Module):
 
         text_feat = text_feat / text_feat.norm(dim=-1, keepdim=True)
         video_feat = video_feat / video_feat.norm(dim=-1, keepdim=True)
-        
+
         retrieve_logits = torch.einsum('atd,bvd->abtv', [text_feat, video_feat])
         retrieve_logits = torch.einsum('abtv,at->abtv', [retrieve_logits, text_mask])
         retrieve_logits = torch.einsum('abtv,bv->abtv', [retrieve_logits, video_mask])
@@ -315,73 +249,7 @@ class HBI(nn.Module):
             v2t_logits = torch.sum(v2t_logits, dim=2) / (video_sum.unsqueeze(0))
             _retrieve_logits = (t2v_logits + v2t_logits) / 2.0
 
-        return _retrieve_logits, _retrieve_logits.T, retrieve_logits
-
-    def action_level(self, text_feat, cls, video_feat, text_mask, video_mask, t_token_dict=None, v_token_dict=None):
-        if self.config.interaction == 'wti':
-            text_weight = self.text_weight_fc0(text_feat).squeeze(2)  # B x N_t x D -> B x N_t
-            text_weight = torch.softmax(text_weight, dim=-1)  # B x N_t
-
-            video_weight = self.video_weight_fc0(video_feat).squeeze(2)  # B x N_v x D -> B x N_v
-            video_weight = torch.softmax(video_weight, dim=-1)  # B x N_v
-
-        text_feat = text_feat / text_feat.norm(dim=-1, keepdim=True)
-        video_feat = video_feat / video_feat.norm(dim=-1, keepdim=True)
-        retrieve_logits = torch.einsum('atd,bvd->abtv', [text_feat, video_feat])
-
-        text_sum = text_mask.sum(-1)
-        video_sum = video_mask.sum(-1)
-
-        if self.config.interaction == 'wti':  # weighted token-wise interaction
-            t2v_logits, max_idx1 = retrieve_logits.max(dim=-1)  # abtv -> abt
-            t2v_logits = torch.einsum('abt,at->ab', [t2v_logits, text_weight])
-
-            v2t_logits, max_idx2 = retrieve_logits.max(dim=-2)  # abtv -> abv
-            v2t_logits = torch.einsum('abv,bv->ab', [v2t_logits, video_weight])
-
-            _retrieve_logits = (t2v_logits + v2t_logits) / 2.0
-        else:
-            # max for video token
-            t2v_logits, max_idx1 = retrieve_logits.max(dim=-1)  # abtv -> abt
-            v2t_logits, max_idx2 = retrieve_logits.max(dim=-2)  # abtv -> abv
-            t2v_logits = torch.sum(t2v_logits, dim=2) / (text_sum.unsqueeze(1))
-            v2t_logits = torch.sum(v2t_logits, dim=2) / (video_sum.unsqueeze(0))
-            _retrieve_logits = (t2v_logits + v2t_logits) / 2.0
-
-        return _retrieve_logits, _retrieve_logits.T, retrieve_logits
-
-    def event_level(self, text_feat, cls, video_feat, text_mask, video_mask, t_token_dict=None, v_token_dict=None):
-        if self.config.interaction == 'wti':
-            text_weight = self.text_weight_fc1(text_feat).squeeze(2)  # B x N_t x D -> B x N_t
-            text_weight = torch.softmax(text_weight, dim=-1)  # B x N_t
-
-            video_weight = self.video_weight_fc1(video_feat).squeeze(2)  # B x N_v x D -> B x N_v
-            video_weight = torch.softmax(video_weight, dim=-1)  # B x N_v
-
-        text_feat = text_feat / text_feat.norm(dim=-1, keepdim=True)
-        video_feat = video_feat / video_feat.norm(dim=-1, keepdim=True)
-        retrieve_logits = torch.einsum('atd,bvd->abtv', [text_feat, video_feat])
-
-        text_sum = text_mask.sum(-1)
-        video_sum = video_mask.sum(-1)
-
-        if self.config.interaction == 'wti':  # weighted token-wise interaction
-            t2v_logits, max_idx1 = retrieve_logits.max(dim=-1)  # abtv -> abt
-            t2v_logits = torch.einsum('abt,at->ab', [t2v_logits, text_weight])
-
-            v2t_logits, max_idx2 = retrieve_logits.max(dim=-2)  # abtv -> abv
-            v2t_logits = torch.einsum('abv,bv->ab', [v2t_logits, video_weight])
-
-            _retrieve_logits = (t2v_logits + v2t_logits) / 2.0
-        else:
-            # max for video token
-            t2v_logits, max_idx1 = retrieve_logits.max(dim=-1)  # abtv -> abt
-            v2t_logits, max_idx2 = retrieve_logits.max(dim=-2)  # abtv -> abv
-            t2v_logits = torch.sum(t2v_logits, dim=2) / (text_sum.unsqueeze(1))
-            v2t_logits = torch.sum(v2t_logits, dim=2) / (video_sum.unsqueeze(0))
-            _retrieve_logits = (t2v_logits + v2t_logits) / 2.0
-
-        return _retrieve_logits, _retrieve_logits.T, retrieve_logits
+        return retrieve_logits, text_weight, video_weight
 
     def get_text_feat(self, text_ids, text_mask, shaped=False):
         if shaped is False:
@@ -474,45 +342,6 @@ class HBI(nn.Module):
             video_feat = video_feat.permute(1, 0, 2)  # LND -> NLD
             video_feat = video_feat + video_feat_original
         return video_feat
-
-
-    def get_similarity_logits(self, text_feat, cls, video_feat, text_mask, video_mask, shaped=False):
-        if shaped is False:
-            text_mask = text_mask.view(-1, text_mask.shape[-1])
-            video_mask = video_mask.view(-1, video_mask.shape[-1])
-
-        M_t2v_logits, M_v2t_logits, logits = self.entity_level(text_feat, cls, video_feat, text_mask, video_mask)
-
-        t_idx_token = torch.arange(text_feat.size(1))[None, :].repeat(text_feat.size(0), 1)
-        t_agg_weight = text_feat.new_ones(text_feat.size(0), text_feat.size(1), 1)
-        t_token_dict = {'x': text_feat,
-                        'token_num': text_feat.size(1),
-                        'idx_token': t_idx_token,
-                        'agg_weight': t_agg_weight,
-                        'mask': text_mask.detach()}
-        v_idx_token = torch.arange(video_feat.size(1))[None, :].repeat(video_feat.size(0), 1)
-        v_agg_weight = video_feat.new_ones(video_feat.size(0), video_feat.size(1), 1)
-        v_token_dict = {'x': video_feat,
-                        'token_num': video_feat.size(1),
-                        'idx_token': v_idx_token,
-                        'agg_weight': v_agg_weight,
-                        'mask': video_mask.detach()}
-
-        t_token_dict = self.t_block0(self.t_ctm0(t_token_dict))
-        v_token_dict = self.v_block0(self.v_ctm0(v_token_dict))
-        text_feat = t_token_dict["x"]
-        video_feat = v_token_dict["x"]
-        M_t2v_logits1, M_v2t_logits1, logits1 = self.action_level(text_feat, cls, video_feat, text_mask, video_mask,
-                                                             t_token_dict, v_token_dict)
-
-        t_token_dict = self.t_block1(self.t_ctm1(t_token_dict))
-        v_token_dict = self.v_block1(self.v_ctm1(v_token_dict))
-        text_feat = t_token_dict["x"]
-        video_feat = v_token_dict["x"]
-        M_t2v_logits2, M_v2t_logits2, logits2 = self.event_level(text_feat, cls, video_feat, text_mask, video_mask,
-                                                             t_token_dict, v_token_dict)
-        
-        return self.config.rate[0] * M_t2v_logits + self.config.rate[1] * M_t2v_logits1 + self.config.rate[2] * M_t2v_logits2
 
     @property
     def dtype(self):
