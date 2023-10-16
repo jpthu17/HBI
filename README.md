@@ -39,12 +39,12 @@ If you find this paper useful, please consider staring 🌟 this repo and citing
 </p></details>
 
 ## 📣 Updates
-* Oct 15 2023: We release our pre-trained estimator weights. If you want to apply a to other tasks, you can initialize a new estimator with the weights we provide. If you want better performance, you can train the estimator with a smaller learning rate and more epochs.
-* Oct 11 2023: We release code for Banzhaf Interaction estimator. Recommended running parameters will be provided shortly, and we will also release our pre-trained estimator weights.
-* Oct 08 2023: I am working on the code for Banzhaf Interaction estimator, which is expected to be released soon.
-* Jun 28 2023: Release code for reimplementing the experiments in the paper.
-* Mar 28 2023: Our **HBI** has been selected as a Highlight paper at CVPR 2023! (Top 2.5% of 9155 submissions).
-* Feb 28 2023: We will release the code asap. (I am busy with other DDLs. After that, I will open the source code as soon as possible. Please understand.)
+* **[2023/10/15]**: We release our [pre-trained estimator weights](https://github.com/jpthu17/HBI#train-the-banzhaf-interaction-estimator). If you want to apply a to other tasks, you can initialize a new estimator with the weights we provide. If you want better performance, you can train the estimator with a smaller learning rate and more epochs.
+* **[2023/10/11]**: We release code for Banzhaf Interaction estimator. Recommended running parameters will be provided shortly, and we will also release our pre-trained estimator weights.
+* **[2023/10/08]**: I am working on the code for Banzhaf Interaction estimator, which is expected to be released soon.
+* **[2023/06/28]**: Release code for reimplementing the experiments in the paper.
+* **[2023/03/28]**: Our **HBI** has been selected as a Highlight paper at CVPR 2023! (Top 2.5% of 9155 submissions).
+* **[2023/02/28]**: We will release the code asap. (I am busy with other DDLs. After that, I will open the source code as soon as possible. Please understand.)
 
   
 ## ⚡ Demo
