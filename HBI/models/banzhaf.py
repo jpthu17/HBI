@@ -126,6 +126,7 @@ class BanzhafInteraction:
 
         #########################
         _text_mask[:, i] = 1
+        _video_mask[:, j] = 0
 
         _text_weight0, _video_weight0 = text_weight.clone(), video_weight.clone()
         _retrieve_logits0 = retrieve_logits.clone()
@@ -146,6 +147,7 @@ class BanzhafInteraction:
         banzhaf_value2 = (t2v_logits + v2t_logits) / 2.0
 
         #########################
+        _text_mask[:, i] = 0
         _video_mask[:, j] = 1
 
         _text_weight0, _video_weight0 = text_weight.clone(), video_weight.clone()
