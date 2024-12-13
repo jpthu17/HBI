@@ -1,6 +1,6 @@
 <div align="center">
   
-# 【CVPR'2023 Highlight🔥】Video-Text as Game Players: Hierarchical Banzhaf Interaction for Cross-Modal Representation Learning
+# 【CVPR'2023 Highlight🔥&TPAMI】Video-Text as Game Players: Hierarchical Banzhaf Interaction for Cross-Modal Representation Learning
   
 [![Conference](http://img.shields.io/badge/CVPR-2023(Highlight)-FFD93D.svg)](https://cvpr.thecvf.com/)
 [![Project](http://img.shields.io/badge/Project-HBI-4D96FF.svg)](https://jpthu17.github.io/HBI/)
