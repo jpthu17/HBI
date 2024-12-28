@@ -14,6 +14,14 @@ In this paper, we creatively model video-text as game players with multivariate 
 ## 📌 Citation
 If you find this paper useful, please consider staring 🌟 this repo and citing 📑 our paper:
 ```
+@article{jin2024hierarchical,
+  title={Hierarchical Banzhaf Interaction for General Video-Language Representation Learning},
+  author={Jin, Peng and Li, Hao and Yuan, Li and Yan, Shuicheng and Chen, Jie},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  year={2024},
+  publisher={IEEE}
+}
+
 @inproceedings{jin2023video,
   title={Video-text as game players: Hierarchical banzhaf interaction for cross-modal representation learning},
   author={Jin, Peng and Huang, Jinfa and Xiong, Pengfei and Tian, Shangxuan and Liu, Chang and Ji, Xiangyang and Yuan, Li and Chen, Jie},
